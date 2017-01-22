@@ -19,9 +19,9 @@ struct Program {
     }
 }
 
-class ProgramService {
+class ProgramAPI {
     
-    private let session = URLSession(configuration: URLSessionConfiguration.default)
+    private let session = URLSession.shared
     private let baseURL = URL(string: "https://vast-retreat-57134.herokuapp.com/programs")!
     
     func allPrograms(completion: @escaping ([Program]?) -> Void) {

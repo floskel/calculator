@@ -29,8 +29,15 @@ class CalculatorTest: XCTestCase {
     
     override func setUp() {
         super.setUp()
-        
         calculator = Calculator()
+    }
+    
+    func testVerification() {
+        let expression = [Calculator.Operation.operand(value: 2), Calculator.Operation.operand(value: 2), a]
+        XCTAssertTrue(calculator.verify(ops: expression))
+        
+        let expression2 = [Calculator.Operation.operand(value: 2), m,  Calculator.Operation.operand(value: 2)]
+        XCTAssertFalse(calculator.verify(ops: expression2))
     }
     
     func testAdding() {
@@ -67,7 +74,7 @@ class CalculatorTest: XCTestCase {
         let result2 = calculator.evaluate(ops: expression2).result
         XCTAssertTrue( result2 == 11)
         
-        let expression3 = [two, four, three, m, a]
+        let expression3 = [two, four, three, m, a] //2+4*2
         let result3 = calculator.evaluate(ops: expression3).result
         XCTAssertTrue(result3 == 14)
     }

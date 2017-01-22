@@ -26,7 +26,7 @@ protocol CalculatorViewModelType {
 
 class CalculatorViewModelInfix : CalculatorViewModelType {
     private let calculator = Calculator()
-    private let programAPI = ProgramService()
+    private let programAPI = ProgramAPI()
     
     private var stack : [Calculator.Operation] = [] {
         didSet {

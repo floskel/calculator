@@ -13,7 +13,7 @@ protocol Reloadable : class {
 
 class ExpressionsViewModel {
     var expressions : [String] = []
-    private let programAPI = ProgramService()
+    private let programAPI = ProgramAPI()
     
     weak var delegate : Reloadable?
     

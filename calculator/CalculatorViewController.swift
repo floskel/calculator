@@ -14,7 +14,7 @@ class CalculatorViewController: UIViewController {
     @IBOutlet weak var expression: UITextField!
     
     var viewModel : CalculatorViewModelType = CalculatorViewModelInfix()
-    private let webService = ProgramService()
+    private let webService = ProgramAPI()
 
     override func viewDidLoad() {
         super.viewDidLoad()
