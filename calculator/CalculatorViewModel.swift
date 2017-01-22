@@ -6,6 +6,8 @@
 //  Copyright © 2017 Floskel. All rights reserved.
 //
 
+import Foundation
+
 protocol CalculatorViewModelType {
     var expression : String { get set }
     var expressionBind : ((String) -> ())? { get set }
@@ -18,10 +20,13 @@ protocol CalculatorViewModelType {
     
     func clear()
     func calculate()
+    
+    func save()
 }
 
 class CalculatorViewModelInfix : CalculatorViewModelType {
     private let calculator = Calculator()
+    private let programAPI = ProgramService()
     
     private var stack : [Calculator.Operation] = [] {
         didSet {
@@ -111,5 +116,11 @@ class CalculatorViewModelInfix : CalculatorViewModelType {
         guard let operation = calculator.knownOps.first(where: { $0.symbol == symbol }) else { return nil }
         
         return .binary(operation)
+    }
+    
+    func save() {
+        programAPI.createProgram(expression: expression) { (program) in
+            print("Program saved")
+        }
     }
 }

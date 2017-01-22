@@ -13,19 +13,16 @@ class CalculatorViewController: UIViewController {
     @IBOutlet weak var display: UITextField!
     @IBOutlet weak var expression: UITextField!
     
-    var viewModel : CalculatorViewModelType = CalculatorViewModelInfix() {
-        didSet {
-            
-        }
-    }
-    
+    var viewModel : CalculatorViewModelType = CalculatorViewModelInfix()
+    private let webService = ProgramService()
+
     override func viewDidLoad() {
         super.viewDidLoad()
         
         viewModel.expressionBind = { [unowned self] expression in
             self.expression.text = expression
         }
-        //TODO: Test retaining
+        
         viewModel.resultBind = { [unowned self] result in
             self.display.text = result
         }
@@ -34,6 +31,17 @@ class CalculatorViewController: UIViewController {
     var currentDisplay : String {
         get { return display.text ?? "" }
         set { display.text = newValue }
+    }
+    
+    @IBAction func saveTapped(_ sender: UIBarButtonItem) {
+        viewModel.save()
+    }
+    
+    @IBAction func allTapped(_ sender: UIBarButtonItem) {
+        let expressions = ExpressionsViewController()
+        let navController = UINavigationController(rootViewController: expressions)
+        
+        present(navController, animated: true)
     }
     
     @IBAction func clearTapped(_ sender: UIButton) {
