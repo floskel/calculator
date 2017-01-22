@@ -6,52 +6,55 @@
 //  Copyright © 2017 Floskel. All rights reserved.
 //
 
-import Foundation
+protocol CalculatorViewModelType {
+    var expression : String { get set }
+    var expressionBind : ((String) -> ())? { get set }
+    
+    var result : String { get set }
+    var resultBind : ((String) -> ())? { get set }
+    
+    @discardableResult
+    func add(input : String) -> Bool
+    
+    func clear()
+    func calculate()
+}
 
-class CalculatorViewModel {
-    
-    enum Input {
-        case digit(Double)
-        case symbol(String)
-    }
-    
+class CalculatorViewModelInfix : CalculatorViewModelType {
     private let calculator = Calculator()
     
     private var stack : [Calculator.Operation] = [] {
         didSet {
-            updateHistory()
+            expression = stack.map({ (op) -> String in
+                switch op {
+                case .operand(let value): return "\(value)"
+                case .binary(let op):   return op.symbol
+                }
+            }).joined(separator: " ")
         }
     }
     
-    var historyBind : ((String) -> ())?
-    var history : String = "" {
-        didSet {
-            historyBind?(history)
-        }
+    var expressionBind : ((String) -> ())?
+    var expression : String = "" {
+        didSet { expressionBind?(expression) }
     }
     
     var resultBind : ((String) -> ())?
     var result : String = "" {
-        didSet {
-            resultBind?(result)
+        didSet { resultBind?(result) }
+    }
+    
+    @discardableResult
+    func add(input: String) -> Bool {
+        if let digit = Double(input) {
+            guard let digitOp = verifiedDigitOp(from: digit) else { return false }
+            stack.append(digitOp)
+            return true
+        } else {
+            guard let symbolOp = verifiedSymbolOp(from: input) else { return false }
+            stack.append(symbolOp)
+            return true
         }
-    }
-    
-    @discardableResult
-    private func input(from input : Input) -> Bool {
-        guard let operation = verifiedOp(from: input) else { return false }
-        stack.append(operation)
-        return true
-    }
-    
-    @discardableResult
-    func input(_ inp : String) -> Bool {
-        return input(from: .symbol(inp))
-    }
-    
-    @discardableResult
-    func input(_ inp : Double) -> Bool {
-        return input(from: .digit(inp))
     }
     
     func clear() {
@@ -62,58 +65,51 @@ class CalculatorViewModel {
     func calculate() {
         //Shunting yard algoritm. From infix -> RPN
         
-        var operatorStack : [Calculator.Operation] = []
-        var outputQueue : [Calculator.Operation] = []
+        var operators : [Calculator.Operation] = []
+        var output : [Calculator.Operation] = []
         
         for token in stack {
             switch token {
             case .operand:
-                outputQueue.append(token)
+                output.append(token)
             case .binary(let o1):
-                if case .binary(let o2)? = operatorStack.last {
+                if case .binary(let o2)? = operators.last {
                     if o1.precedence <= o2.precedence {
-                        if let op = operatorStack.popLast() {
-                            outputQueue.append(op)
+                        if let op = operators.popLast() {
+                            output.append(op)
                         }
                     }
                 }
-                operatorStack.append(token)
+                operators.append(token)
             }
         }
         
-        while !operatorStack.isEmpty {
-            guard let last = operatorStack.popLast() else { break }
-            outputQueue.append(last)
+        while !operators.isEmpty {
+            guard let last = operators.popLast() else { break }
+            output.append(last)
         }
         
-        if let res = calculator.evaluate(ops: outputQueue).result {
+        if let res = calculator.evaluate(ops: output).result {
             result = "\(res)"
         }
     }
     
-    private func updateHistory() {
-        history = stack.reduce("") { (accumulator, operation) -> String in
-            switch operation {
-            case .operand(let value): return accumulator + "\(value) "
-            case .binary(let op):   return accumulator + op.symbol + " "
-            }
+    private func verifiedDigitOp(from value : Double) -> Calculator.Operation? {
+        if case .operand? = stack.last {
+            return nil
         }
+        return Calculator.Operation.operand(value: value)
     }
     
-    private func verifiedOp(from input : Input) -> Calculator.Operation? {
-        switch input {
-        case .digit(let value):
-            if case .operand? = stack.last {
-                return nil
-            }
-            return Calculator.Operation.operand(value)
-        case .symbol(let symbol):
-            guard let last = stack.last else { return nil }
-            if case .binary = last {
-                return nil
-            }
-            guard let operation = calculator.knownOps.first(where: { $0.symbol == symbol }) else { return nil }
-            return .binary(operation)
+    private func verifiedSymbolOp(from symbol : String) -> Calculator.Operation? {
+        
+        guard let last = stack.last else { return nil }
+        
+        if case .binary = last {
+            return nil
         }
+        guard let operation = calculator.knownOps.first(where: { $0.symbol == symbol }) else { return nil }
+        
+        return .binary(operation)
     }
 }

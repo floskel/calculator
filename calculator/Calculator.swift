@@ -8,18 +8,16 @@
 
 import Foundation
 
-typealias BinaryFunc = (Double, Double) -> Double
-
 struct BinaryOperation {
     let symbol : String
     let precedence : Int
-    let operation : BinaryFunc
+    let operation : (Double, Double) -> Double
 }
 
 class Calculator {
     
     enum Operation {
-        case operand(Double)
+        case operand(value : Double)
         case binary(BinaryOperation)
     }
     

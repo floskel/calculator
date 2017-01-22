@@ -13,27 +13,27 @@ class CalculatorViewController: UIViewController {
     @IBOutlet weak var display: UITextField!
     @IBOutlet weak var expression: UITextField!
     
-    let viewModel = CalculatorViewModel()
+    var viewModel : CalculatorViewModelType = CalculatorViewModelInfix() {
+        didSet {
+            
+        }
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        viewModel.historyBind = { [unowned self] history in
-            self.expression.text = history
+        viewModel.expressionBind = { [unowned self] expression in
+            self.expression.text = expression
         }
-        
+        //TODO: Test retaining
         viewModel.resultBind = { [unowned self] result in
             self.display.text = result
         }
     }
     
     var currentDisplay : String {
-        get {
-            return display.text ?? ""
-        }
-        set {
-            display.text = newValue
-        }
+        get { return display.text ?? "" }
+        set { display.text = newValue }
     }
     
     @IBAction func clearTapped(_ sender: UIButton) {
@@ -46,17 +46,13 @@ class CalculatorViewController: UIViewController {
     
     @IBAction func operatorTapped(_ sender: UIButton) {
         guard let title = sender.currentTitle else { return }
-        guard let currentDigit = Double(currentDisplay) else { return }
-        
-        viewModel.input(currentDigit)
-        viewModel.input(title)
-        
+        viewModel.add(input: currentDisplay)
+        viewModel.add(input: title)
         currentDisplay = ""
     }
     
     @IBAction func digitTapped(_ sender: UIButton) {
         guard let title = sender.currentTitle else { return }
-        
         currentDisplay = currentDisplay + title
     }
     
@@ -66,9 +62,7 @@ class CalculatorViewController: UIViewController {
     }
     
     @IBAction func equalTapped(_ sender: UIButton) {
-        print("equal")
-        guard let currentDigit = Double(currentDisplay) else { return }
-        viewModel.input(currentDigit)
+        viewModel.add(input: currentDisplay)
         viewModel.calculate()
     }
 }
