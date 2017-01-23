@@ -10,11 +10,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "calculatorTests/CalculatorTest.swift"
-            timestampString = "506810753.998901"
+            timestampString = "506811046.726245"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "46"
-            endingLineNumber = "46"
+            startingLineNumber = "45"
+            endingLineNumber = "45"
             landmarkName = "testAdding()"
             landmarkType = "7">
             <Locations>

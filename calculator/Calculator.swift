@@ -20,12 +20,11 @@ class Calculator {
         case operand(value : Double)
         case binary(BinaryOperation)
         
+        // Required number of operations needed to complete the calculation
         var valence : Int {
-            get {
-                switch self {
+            switch self {
                 case .operand: return 0
                 case .binary: return 2
-                }
             }
         }
     }
