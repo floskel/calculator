@@ -11,6 +11,9 @@ protocol Reloadable : class {
     func reload()
 }
 
+// Expression view model
+// Fetches programs from the API and formats it to a reasonable format
+
 class ExpressionsViewModel {
     var expressions : [String] = []
     private let programAPI = ProgramAPI()

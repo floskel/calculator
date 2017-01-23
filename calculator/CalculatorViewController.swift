@@ -8,13 +8,16 @@
 
 import UIKit
 
+// Calculator view controller 
+// Handles user input and bindings to various view models
+// Access to saved expressions 
+
 class CalculatorViewController: UIViewController {
 
     @IBOutlet weak var display: UITextField!
     @IBOutlet weak var expression: UITextField!
     
     var viewModel : CalculatorViewModelType = CalculatorViewModelInfix()
-    private let webService = ProgramAPI()
 
     override func viewDidLoad() {
         super.viewDidLoad()

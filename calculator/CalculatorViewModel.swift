@@ -8,6 +8,7 @@
 
 import Foundation
 
+// Protocol to describe various calculator view models.
 protocol CalculatorViewModelType {
     var expression : String { get set }
     var expressionBind : ((String) -> ())? { get set }
@@ -23,6 +24,11 @@ protocol CalculatorViewModelType {
     
     func save()
 }
+
+// Calculator ViewModel.
+// Manages infix input from the view/view controller.
+// Given correct infix input will transform to RPN and calculate the result
+// Bindables to update the view.
 
 class CalculatorViewModelInfix : CalculatorViewModelType {
     private let calculator = Calculator()

@@ -14,6 +14,9 @@ struct BinaryOperation {
     let operation : (Double, Double) -> Double
 }
 
+// RPN Calculator. 
+// Verifies RPN expression and calculates the result
+
 class Calculator {
     
     enum Operation {

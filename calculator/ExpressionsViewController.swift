@@ -8,6 +8,9 @@
 
 import UIKit
 
+// Expressions
+// Displays saved expressions provided from the view model
+
 class ExpressionsViewController : UIViewController {
     fileprivate let tableView = UITableView()
     
